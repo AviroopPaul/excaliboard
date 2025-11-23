@@ -1,9 +1,13 @@
-import { StrictMode, Component, type ErrorInfo, type ReactNode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { StrictMode, Component, type ErrorInfo, type ReactNode } from "react";
+import { createRoot } from "react-dom/client";
+import "./index.css";
+import App from "./App.tsx";
+import { ThemeProvider } from "./lib/ThemeContext.tsx";
 
-class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean, error: Error | null }> {
+class ErrorBoundary extends Component<
+  { children: ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
   constructor(props: { children: ReactNode }) {
     super(props);
     this.state = { hasError: false, error: null };
@@ -20,7 +24,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
   render() {
     if (this.state.hasError) {
       return (
-        <div style={{ padding: 20, color: 'red' }}>
+        <div style={{ padding: 20, color: "red" }}>
           <h1>Something went wrong.</h1>
           <pre>{this.state.error?.toString()}</pre>
           <pre>{this.state.error?.stack}</pre>
@@ -32,10 +36,12 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { hasError: boole
   }
 }
 
-createRoot(document.getElementById('root')!).render(
+createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ErrorBoundary>
-      <App />
+      <ThemeProvider>
+        <App />
+      </ThemeProvider>
     </ErrorBoundary>
-  </StrictMode>,
-)
+  </StrictMode>
+);

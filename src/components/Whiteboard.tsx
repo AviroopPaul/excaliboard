@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Excalidraw, MainMenu, WelcomeScreen } from "@excalidraw/excalidraw";
 import { db } from "../lib/db";
+import { ThemeToggle } from "./ThemeToggle";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
 // Simple debounce implementation
@@ -109,28 +110,31 @@ export function Whiteboard() {
 
   if (loading) {
     return (
-      <div className="h-screen w-screen flex items-center justify-center bg-gray-50">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+      <div className="h-screen w-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <Loader2 className="w-8 h-8 animate-spin text-blue-600 dark:text-blue-400" />
       </div>
     );
   }
 
   return (
-    <div className="h-screen w-screen flex flex-col overflow-hidden">
-      <div className="h-14 border-b flex items-center px-4 bg-white shrink-0 z-10 relative shadow-sm justify-between">
+    <div className="h-screen w-screen flex flex-col overflow-hidden bg-white dark:bg-gray-900">
+      <div className="h-14 border-b border-gray-200 dark:border-gray-700 flex items-center px-4 bg-white dark:bg-gray-800 shrink-0 z-10 relative shadow-sm justify-between">
         <div className="flex items-center">
           <Link
             to="/"
-            className="p-2 hover:bg-gray-100 rounded-full mr-3 transition-colors"
+            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full mr-3 transition-colors"
             title="Back to Dashboard"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-600" />
+            <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
           </Link>
-          <div className="font-semibold text-gray-800 truncate max-w-md">
+          <div className="font-semibold text-gray-800 dark:text-gray-100 truncate max-w-md">
             {boardName}
           </div>
         </div>
-        <div className="text-xs text-gray-500">Auto-save enabled</div>
+        <div className="flex items-center gap-3">
+          <div className="text-xs text-gray-500 dark:text-gray-400">Auto-save enabled</div>
+          <ThemeToggle />
+        </div>
       </div>
       <div className="flex-1 w-full h-full relative">
         <Excalidraw

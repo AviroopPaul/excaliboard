@@ -127,36 +127,36 @@ export function FolderItem({ folder }: FolderItemProps) {
     <div className="relative group">
       <Link
         to={`/folder/${folder.id}`}
-        className="flex flex-col items-center p-4 bg-white border rounded-lg hover:shadow-md transition-shadow cursor-pointer aspect-square justify-center"
+        className="flex flex-col items-center p-4 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg hover:shadow-md dark:hover:shadow-gray-900/50 transition-shadow cursor-pointer aspect-square justify-center"
       >
-        <FolderIcon className="w-12 h-12 text-blue-400 group-hover:text-blue-600 transition-colors" />
-        <span className="mt-3 text-sm font-medium text-gray-700 truncate w-full text-center select-none">
+        <FolderIcon className="w-12 h-12 text-blue-400 dark:text-blue-300 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors" />
+        <span className="mt-3 text-sm font-medium text-gray-700 dark:text-gray-200 truncate w-full text-center select-none">
           {folder.name}
         </span>
       </Link>
 
       <button
         onClick={handleMenuClick}
-        className="absolute top-2 right-2 p-1.5 rounded hover:bg-gray-200 bg-white border border-gray-200 opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-sm"
+        className="absolute top-2 right-2 p-1.5 rounded hover:bg-gray-200 dark:hover:bg-gray-600 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 opacity-0 group-hover:opacity-100 transition-opacity z-10 shadow-sm"
       >
-        <MoreVertical className="w-4 h-4 text-gray-600" />
+        <MoreVertical className="w-4 h-4 text-gray-600 dark:text-gray-300" />
       </button>
 
       {showMenu && (
         <div
           ref={menuRef}
-          className="absolute top-8 right-2 bg-white border border-gray-200 rounded-md shadow-lg z-20 min-w-[140px]"
+          className="absolute top-8 right-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md shadow-lg z-20 min-w-[140px]"
         >
           <button
             onClick={handleRename}
-            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
           >
             <Pencil className="w-4 h-4" />
             Rename
           </button>
           <button
             onClick={handleDelete}
-            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+            className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
           >
             <Trash2 className="w-4 h-4" />
             Delete

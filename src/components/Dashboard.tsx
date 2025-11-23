@@ -4,6 +4,7 @@ import { db } from "../lib/db";
 import { FolderItem } from "./FolderItem";
 import { BoardItem } from "./BoardItem";
 import { Modal } from "./Modal";
+import { ThemeToggle } from "./ThemeToggle";
 import { Plus, ArrowLeft, Loader2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useState, useEffect } from "react";
@@ -12,7 +13,10 @@ export function Dashboard() {
   const { folderId } = useParams();
   // Use "root" string instead of null because IndexedDB keys cannot be null
   const currentFolderId = folderId || "root";
-  const [userName, setUserName] = useState<string>("User");
+  const [userName, setUserName] = useState<string>(() => {
+    // Get user name from localStorage on initial render
+    return localStorage.getItem("userName") || "User";
+  });
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     type: "folder" | "board" | null;
@@ -34,12 +38,6 @@ export function Dashboard() {
   );
 
   useEffect(() => {
-    // Get user name from localStorage
-    const storedName = localStorage.getItem("userName");
-    if (storedName) {
-      setUserName(storedName);
-    }
-
     // Listen for userName updates
     const handleUserNameUpdate = () => {
       const updatedName = localStorage.getItem("userName");
@@ -89,8 +87,8 @@ export function Dashboard() {
 
   if (folders === undefined || boards === undefined) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-gray-400" />
+      <div className="flex items-center justify-center h-screen bg-gray-50 dark:bg-gray-900">
+        <Loader2 className="w-8 h-8 animate-spin text-gray-400 dark:text-gray-500" />
       </div>
     );
   }
@@ -102,31 +100,32 @@ export function Dashboard() {
       : `/folder/${currentFolder?.parentId}`;
 
   return (
-    <div className="p-8 bg-gray-50">
+    <div className="p-8 bg-gray-50 dark:bg-gray-900 transition-colors">
       <header className="flex items-center justify-between mb-8 max-w-7xl mx-auto">
         <div className="flex items-center gap-4">
           {!isRoot && (
             <Link
               to={parentLink}
-              className="p-2 hover:bg-gray-200 rounded-full transition-colors"
+              className="p-2 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-full transition-colors"
             >
-              <ArrowLeft className="w-6 h-6 text-gray-600" />
+              <ArrowLeft className="w-6 h-6 text-gray-600 dark:text-gray-300" />
             </Link>
           )}
-          <h1 className="text-3xl font-bold text-gray-800 tracking-tight">
+          <h1 className="text-3xl font-bold text-gray-800 dark:text-gray-100 tracking-tight">
             {currentFolder ? currentFolder.name : `${userName}'s Boards`}
           </h1>
         </div>
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
           <button
             onClick={createFolder}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 font-medium transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 font-medium transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" /> New Folder
           </button>
           <button
             onClick={createBoard}
-            className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 font-medium transition-colors shadow-sm"
+            className="flex items-center gap-2 px-4 py-2 bg-blue-600 dark:bg-blue-500 text-white rounded-md hover:bg-blue-700 dark:hover:bg-blue-600 font-medium transition-colors shadow-sm"
           >
             <Plus className="w-4 h-4" /> New Board
           </button>
@@ -144,7 +143,7 @@ export function Dashboard() {
         </div>
 
         {folders?.length === 0 && boards?.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-32 text-gray-400 border-2 border-dashed border-gray-200 rounded-xl mt-8">
+          <div className="flex flex-col items-center justify-center py-32 text-gray-400 dark:text-gray-500 border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-xl mt-8">
             <p className="text-lg font-medium">This folder is empty</p>
             <p className="text-sm mt-2">
               Create a new board or folder to get started.
@@ -157,8 +156,14 @@ export function Dashboard() {
         isOpen={modalState.isOpen}
         onClose={handleModalClose}
         onConfirm={handleModalConfirm}
-        title={modalState.type === "folder" ? "Create New Folder" : "Create New Board"}
-        placeholder={modalState.type === "folder" ? "Folder name" : "Board name"}
+        title={
+          modalState.type === "folder"
+            ? "Create New Folder"
+            : "Create New Board"
+        }
+        placeholder={
+          modalState.type === "folder" ? "Folder name" : "Board name"
+        }
         confirmText="Create"
       />
     </div>
