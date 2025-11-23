@@ -3,6 +3,7 @@ import { useParams, Link } from "react-router-dom";
 import { db } from "../lib/db";
 import { FolderItem } from "./FolderItem";
 import { BoardItem } from "./BoardItem";
+import { Modal } from "./Modal";
 import { Plus, ArrowLeft, Loader2 } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 import { useState, useEffect } from "react";
@@ -12,6 +13,10 @@ export function Dashboard() {
   // Use "root" string instead of null because IndexedDB keys cannot be null
   const currentFolderId = folderId || "root";
   const [userName, setUserName] = useState<string>("User");
+  const [modalState, setModalState] = useState<{
+    isOpen: boolean;
+    type: "folder" | "board" | null;
+  }>({ isOpen: false, type: null });
 
   const folders = useLiveQuery(
     () => db.folders.where({ parentId: currentFolderId }).toArray(),
@@ -34,31 +39,52 @@ export function Dashboard() {
     if (storedName) {
       setUserName(storedName);
     }
+
+    // Listen for userName updates
+    const handleUserNameUpdate = () => {
+      const updatedName = localStorage.getItem("userName");
+      if (updatedName) {
+        setUserName(updatedName);
+      }
+    };
+
+    window.addEventListener("userNameUpdated", handleUserNameUpdate);
+
+    return () => {
+      window.removeEventListener("userNameUpdated", handleUserNameUpdate);
+    };
   }, []);
 
-  const createFolder = async () => {
-    const name = prompt("Folder Name:");
-    if (!name) return;
-    await db.folders.add({
-      id: uuidv4(),
-      name,
-      parentId: currentFolderId,
-      createdAt: Date.now(),
-    });
+  const createFolder = () => {
+    setModalState({ isOpen: true, type: "folder" });
   };
 
-  const createBoard = async () => {
-    const name = prompt("Board Name:");
-    if (!name) return;
-    const id = uuidv4();
-    await db.boards.add({
-      id,
-      name,
-      folderId: currentFolderId,
-      content: [],
-      createdAt: Date.now(),
-      updatedAt: Date.now(),
-    });
+  const createBoard = () => {
+    setModalState({ isOpen: true, type: "board" });
+  };
+
+  const handleModalConfirm = async (name: string) => {
+    if (modalState.type === "folder") {
+      await db.folders.add({
+        id: uuidv4(),
+        name,
+        parentId: currentFolderId,
+        createdAt: Date.now(),
+      });
+    } else if (modalState.type === "board") {
+      await db.boards.add({
+        id: uuidv4(),
+        name,
+        folderId: currentFolderId,
+        content: [],
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      });
+    }
+  };
+
+  const handleModalClose = () => {
+    setModalState({ isOpen: false, type: null });
   };
 
   if (folders === undefined || boards === undefined) {
@@ -126,6 +152,15 @@ export function Dashboard() {
           </div>
         )}
       </main>
+
+      <Modal
+        isOpen={modalState.isOpen}
+        onClose={handleModalClose}
+        onConfirm={handleModalConfirm}
+        title={modalState.type === "folder" ? "Create New Folder" : "Create New Board"}
+        placeholder={modalState.type === "folder" ? "Folder name" : "Board name"}
+        confirmText="Create"
+      />
     </div>
   );
 }

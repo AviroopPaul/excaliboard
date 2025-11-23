@@ -1,22 +1,28 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Dashboard } from "./components/Dashboard";
 import { Whiteboard } from "./components/Whiteboard";
+import { Modal } from "./components/Modal";
 import { Heart } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function App() {
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
   useEffect(() => {
     // Check if user name is already stored
     const storedName = localStorage.getItem("userName");
 
     if (!storedName) {
-      // Prompt user for their name on first visit
-      const name = prompt("Welcome! What's your name?");
-      if (name && name.trim()) {
-        localStorage.setItem("userName", name.trim());
-      }
+      // Show welcome modal on first visit
+      setShowWelcomeModal(true);
     }
   }, []);
+
+  const handleWelcomeConfirm = (name: string) => {
+    localStorage.setItem("userName", name);
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event("userNameUpdated"));
+  };
 
   return (
     <BrowserRouter>
@@ -47,6 +53,15 @@ function App() {
           </div>
         </footer>
       </div>
+
+      <Modal
+        isOpen={showWelcomeModal}
+        onClose={() => setShowWelcomeModal(false)}
+        onConfirm={handleWelcomeConfirm}
+        title="Welcome! 👋"
+        placeholder="Enter your name"
+        confirmText="Get Started"
+      />
     </BrowserRouter>
   );
 }
