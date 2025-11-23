@@ -2,10 +2,28 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
   overflow: hidden;
+}
+
+/* Excalidraw dark mode styles */
+.excalidraw-wrapper .excalidraw.theme--dark {
+  --color-primary: #6965db;
+  --color-primary-darker: #5753c6;
+  --color-primary-darkest: #4845b0;
+  --color-primary-light: #8481e8;
+  --color-primary-contrast-offset: #7773d4;
+}
+
+.excalidraw-wrapper .excalidraw {
+  --color-primary: #6965db;
+  --color-primary-darker: #5753c6;
+  --color-primary-darkest: #4845b0;
+  --color-primary-light: #8481e8;
 }

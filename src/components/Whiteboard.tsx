@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import { Excalidraw, MainMenu, WelcomeScreen } from "@excalidraw/excalidraw";
 import { db } from "../lib/db";
 import { ThemeToggle } from "./ThemeToggle";
+import { useTheme } from "../lib/useTheme";
 import { ArrowLeft, Loader2 } from "lucide-react";
 
 // Simple debounce implementation
@@ -17,6 +18,7 @@ function debounce<T extends (...args: any[]) => any>(func: T, wait: number) {
 export function Whiteboard() {
   const { boardId } = useParams();
   const navigate = useNavigate();
+  const { theme } = useTheme();
   const [initialData, setInitialData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [boardName, setBoardName] = useState("");
@@ -46,8 +48,12 @@ export function Whiteboard() {
 
         const initialContent =
           board.content && board.content.length > 0 ? board.content : [];
+
+        // Set background color based on current theme
+        const backgroundColor = theme === "dark" ? "#1e1e1e" : "#ffffff";
+
         const initialAppState = board.appState || {
-          viewBackgroundColor: "#ffffff",
+          viewBackgroundColor: backgroundColor,
           scrollX: 0,
           scrollY: 0,
           zoom: { value: 1 },
@@ -55,7 +61,10 @@ export function Whiteboard() {
 
         setInitialData({
           elements: initialContent,
-          appState: initialAppState,
+          appState: {
+            ...initialAppState,
+            theme: theme,
+          },
           scrollToContent: false, // Explicitly disable auto-scroll to prevent jumpiness
         });
 
@@ -69,7 +78,7 @@ export function Whiteboard() {
       }
     };
     loadBoard();
-  }, [boardId, navigate]);
+  }, [boardId, navigate, theme]);
 
   const saveToDb = async (elements: readonly any[], appState: any) => {
     if (!boardId) return;
@@ -132,15 +141,18 @@ export function Whiteboard() {
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <div className="text-xs text-gray-500 dark:text-gray-400">Auto-save enabled</div>
+          <div className="text-xs text-gray-500 dark:text-gray-400">
+            Auto-save enabled
+          </div>
           <ThemeToggle />
         </div>
       </div>
-      <div className="flex-1 w-full h-full relative">
+      <div className="flex-1 w-full h-full relative excalidraw-wrapper">
         <Excalidraw
           key={excalidrawKey}
           initialData={initialData}
           onChange={onChange}
+          theme={theme}
         >
           <MainMenu>
             <MainMenu.DefaultItems.ClearCanvas />
@@ -154,11 +166,10 @@ export function Whiteboard() {
             <WelcomeScreen.Hints.ToolbarHint />
             <WelcomeScreen.Center>
               <WelcomeScreen.Center.Logo>
-
                 <img src="/favicon.png" className="w-12 h-12" />
                 <h1>ExcaliBoard</h1>
-                </WelcomeScreen.Center.Logo>
-              
+              </WelcomeScreen.Center.Logo>
+
               <WelcomeScreen.Center.Heading>
                 Best Alternative to Excalidraw+
               </WelcomeScreen.Center.Heading>
