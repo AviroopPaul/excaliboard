@@ -149,9 +149,14 @@ export function Whiteboard() {
             <WelcomeScreen.Hints.MenuHint />
             <WelcomeScreen.Hints.ToolbarHint />
             <WelcomeScreen.Center>
-              <WelcomeScreen.Center.Logo />
+              <WelcomeScreen.Center.Logo>
+
+                <img src="/favicon.png" className="w-12 h-12" />
+                <h1>ExcaliBoard</h1>
+                </WelcomeScreen.Center.Logo>
+              
               <WelcomeScreen.Center.Heading>
-                Excalidraw Whiteboard
+                Best Alternative to Excalidraw+
               </WelcomeScreen.Center.Heading>
               <WelcomeScreen.Center.Menu>
                 <WelcomeScreen.Center.MenuItemHelp />
