@@ -47,12 +47,16 @@ export function ConfirmModal({
         <div className="flex items-start gap-4 mb-4">
           <div
             className={`p-2 rounded-full ${
-              variant === "danger" ? "bg-red-100 dark:bg-red-900/30" : "bg-yellow-100 dark:bg-yellow-900/30"
+              variant === "danger"
+                ? "bg-red-100 dark:bg-red-900/30"
+                : "bg-yellow-100 dark:bg-yellow-900/30"
             }`}
           >
             <AlertTriangle
               className={`w-6 h-6 ${
-                variant === "danger" ? "text-red-600 dark:text-red-400" : "text-yellow-600 dark:text-yellow-400"
+                variant === "danger"
+                  ? "text-red-600 dark:text-red-400"
+                  : "text-yellow-600 dark:text-yellow-400"
               }`}
             />
           </div>

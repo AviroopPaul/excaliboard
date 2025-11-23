@@ -72,7 +72,9 @@ export function Modal({
         onKeyDown={handleKeyDown}
       >
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
+            {title}
+          </h2>
           <button
             onClick={handleCancel}
             className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
